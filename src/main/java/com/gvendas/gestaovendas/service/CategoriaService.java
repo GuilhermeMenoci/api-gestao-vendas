@@ -34,6 +34,10 @@ public class CategoriaService {
 		BeanUtils.copyProperties(categoria, categoriaSave, "codigo");
 		return categoriaRepository.save(categoriaSave);
 	}
+	
+	public void delete(Long codigo) {
+		categoriaRepository.deleteById(codigo);
+	}
 
 	private CategoriaEntity validCategoriaExist(Long codigo) {
 		Optional<CategoriaEntity> categoria = listByCodigo(codigo);
