@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "categoria")
@@ -22,6 +25,8 @@ public class CategoriaEntity implements Serializable{
 	private Long codigo;
 	
 	@Column(name = "nome")
+	@NotBlank(message = "Nome")
+	@Length(min = 3, max = 50, message = "Nome")
 	private String nome;
 
 	public Long getCodigo() {
