@@ -23,4 +23,8 @@ public class CategoriaService {
 		return categoriaRepository.findById(codigo);
 	}
 	
+	public CategoriaEntity save(CategoriaEntity categoria) {
+		return categoriaRepository.save(categoria);
+	}
+	
 }
