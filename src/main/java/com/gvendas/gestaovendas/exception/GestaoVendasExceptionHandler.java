@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,8 @@ public class GestaoVendasExceptionHandler extends ResponseEntityExceptionHandler
 
 	private static final String CONSTANT_VALIDATION_NOT_BLANK = "NotBlank";
 	private static final String CONSTANT_VALIDATION_LENGTH = "Length";
-
+	private static final String CONSTANT_VALIDATION_NOT_NULL = "NotNull";
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -37,6 +39,14 @@ public class GestaoVendasExceptionHandler extends ResponseEntityExceptionHandler
 		String msgDev =  ex.toString();
 		List<Error> erros = Arrays.asList(new Error(msgUsuario, msgDev));
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request){
+		String msgUsuario = "Recurso não encontrado";
+		String msgDev =  ex.toString();
+		List<Error> erros = Arrays.asList(new Error(msgUsuario, msgDev));
+		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 	
 	@ExceptionHandler
@@ -65,6 +75,9 @@ public class GestaoVendasExceptionHandler extends ResponseEntityExceptionHandler
 		if (fieldError.getCode().equals(CONSTANT_VALIDATION_LENGTH)) {
 			return fieldError.getDefaultMessage().concat(String.format(" deve ter entre %s e %s caracteres",
 					fieldError.getArguments()[2], fieldError.getArguments()[1]));
+		}
+		if (fieldError.getCode().equals(CONSTANT_VALIDATION_NOT_NULL)) {
+			return fieldError.getDefaultMessage().concat(" é obrigatorio");
 		}
 
 		return fieldError.toString();

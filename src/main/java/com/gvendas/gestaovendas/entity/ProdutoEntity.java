@@ -12,6 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "produto")
@@ -25,21 +29,28 @@ public class ProdutoEntity implements Serializable{
 	private Long codigo;
 	
 	@Column(name = "descricao")
+	@NotBlank(message = "Descricao")
+	@Length(min = 3, max = 50, message = "Descricao")
 	private String descricao;
 	
 	@Column(name = "quantidade")
+	@NotNull(message = "Quantidade")
 	private Integer quantidade;
 	
 	@Column(name = "preco_custo")
+	@NotNull(message = "Preço custo")
 	private BigDecimal precoCusto;
 	
 	@Column(name = "preco_venda")
+	@NotNull(message = "Preço venda")
 	private BigDecimal precoVenda;
 	
 	@Column(name = "observacao")
+	@Length(max = 500, message = "Observação")
 	private String observacao;
 	
 	@ManyToOne
+	@NotNull(message = "Código categoria")
 	@JoinColumn(name = "codigo_categoria", referencedColumnName = "codigo")
 	private CategoriaEntity categoria;
 
