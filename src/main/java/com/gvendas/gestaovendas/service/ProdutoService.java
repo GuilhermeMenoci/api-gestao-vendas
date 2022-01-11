@@ -33,8 +33,8 @@ public class ProdutoService {
 		return produtoRepository.findById(codigo);
 	}
 	
-	public ProdutoEntity save(ProdutoEntity produto) {
-		validCategoriaExist(produto.getCategoria().getCodigo());
+	public ProdutoEntity save(Long codigoCategoria, ProdutoEntity produto) {
+		validCategoriaExist(codigoCategoria);
 		validProductDuplicated(produto);
 		return produtoRepository.save(produto);
 	}
