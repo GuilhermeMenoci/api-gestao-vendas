@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.gvendas.gestaovendas.entity.CategoriaEntity;
+import com.gvendas.gestaovendas.exception.RegraNegocioException;
 import com.gvendas.gestaovendas.repository.CategoriaRepository;
 
 @Service
@@ -26,11 +27,13 @@ public class CategoriaService {
 	}
 	
 	public CategoriaEntity save(CategoriaEntity categoria) {
+		validarCategoriaDuplicada(categoria);
 		return categoriaRepository.save(categoria);
 	}
 	
 	public CategoriaEntity update(Long codigo, CategoriaEntity categoria) {
 		CategoriaEntity categoriaSave = validCategoriaExist(codigo);
+		validarCategoriaDuplicada(categoria);
 		BeanUtils.copyProperties(categoria, categoriaSave, "codigo");
 		return categoriaRepository.save(categoriaSave);
 	}
@@ -44,6 +47,13 @@ public class CategoriaService {
 		if(categoria.isEmpty())
 			throw new EmptyResultDataAccessException(1);
 		return categoria.get();
+	}
+	
+	private void validarCategoriaDuplicada(CategoriaEntity categoria) {
+		CategoriaEntity categoriaEncontrada = categoriaRepository.findByNome(categoria.getNome());
+		if(categoriaEncontrada != null && categoriaEncontrada.getCodigo() != categoria.getCodigo()) {
+			throw new RegraNegocioException(String.format("A categoria %s já está cadastrada!", categoria.getNome().toUpperCase()));
+		}
 	}
 	
 }
