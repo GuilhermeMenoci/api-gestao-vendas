@@ -32,33 +32,33 @@ public class CategoriaController {
 	@Autowired
 	private CategoriaService categoriaService;
 	
-	@ApiOperation(value = "Listar todas as categorias")
+	@ApiOperation(value = "Listar todas as categorias", nickname = "listAllCategory")
 	@GetMapping
 	public List<CategoriaEntity> listAll(){
 		return categoriaService.listAll();
 	}
 	
-	@ApiOperation(value = "Listar por código")
+	@ApiOperation(value = "Listar por código", nickname = "listByCodigoCategory")
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Optional<CategoriaEntity>> listByCodigo(@PathVariable Long codigo){
 		Optional<CategoriaEntity> categoria = categoriaService.listByCodigo(codigo);
 		return categoria.isPresent() ? ResponseEntity.ok(categoria) : ResponseEntity.notFound().build();
 	}
 	
-	@ApiOperation(value = "Cadastrar uma categoria")
+	@ApiOperation(value = "Cadastrar uma categoria", nickname = "saveCategory")
 	@PostMapping
 	public ResponseEntity<CategoriaEntity> save(@Valid @RequestBody CategoriaEntity categoria){
 		CategoriaEntity categoriaSave = categoriaService.save(categoria);
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSave);
 	}
 	
-	@ApiOperation(value = "Atualizar uma categoria")
+	@ApiOperation(value = "Atualizar uma categoria", nickname = "updateCategory")
 	@PutMapping("/{codigo}")
 	public ResponseEntity<CategoriaEntity> update(@PathVariable Long codigo, @Valid @RequestBody CategoriaEntity categoria){
 		return ResponseEntity.ok(categoriaService.update(codigo, categoria));
 	}
 	
-	@ApiOperation(value = "Deletar uma categoria")
+	@ApiOperation(value = "Deletar uma categoria", nickname = "deleteCategory")
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long codigo) {

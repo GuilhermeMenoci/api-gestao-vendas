@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,17 +33,23 @@ public class ProdutoController {
 //		return produtoService.listAll();
 //	}
 	
-	@ApiOperation(value = "Listar todos os produtos")
+	@ApiOperation(value = "Listar todos os produtos", nickname = "listAllProduct")
 	@GetMapping
 	public List<ProdutoEntity> listAll(@PathVariable Long codigoCategoria){
 		return produtoService.listAll(codigoCategoria);
 	}
 	
-	@ApiOperation(value = "Listar produto por codigo")
+	@ApiOperation(value = "Listar produto por codigo", nickname = "listByCodigoProduct")
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Optional<ProdutoEntity>> listByCodigo(@PathVariable Long codigo){
 		Optional<ProdutoEntity> produto = produtoService.listByCodigo(codigo);
 		return produto.isPresent() ? ResponseEntity.ok(produto) : ResponseEntity.notFound().build();
+	}
+	
+	@ApiOperation(value = "Cadastrar um produto", nickname = "SaveProduct")
+	@PostMapping
+	public ResponseEntity<ProdutoEntity> save(@RequestBody ProdutoEntity produto){
+		return ResponseEntity.status(HttpStatus.CREATED).body(produtoService.save(produto));
 	}
 	
 }
