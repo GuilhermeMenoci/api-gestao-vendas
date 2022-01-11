@@ -47,6 +47,12 @@ public class ProdutoService {
 		return produtoRepository.save(produtoSalvo);
 	}
 	
+	public void delete(Long codigoCategoria, Long codigoProduto) {
+		ProdutoEntity produto = validProductExist(codigoProduto);
+		validCategoriaExist(codigoCategoria);
+		produtoRepository.delete(produto);
+	}
+	
 	private ProdutoEntity validProductExist(Long codigoProduto) {
 		Optional<ProdutoEntity> produto = listByCodigo(codigoProduto);
 		if(produto.isEmpty()) {
