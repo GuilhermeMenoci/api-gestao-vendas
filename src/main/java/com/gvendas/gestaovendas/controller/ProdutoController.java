@@ -18,16 +18,22 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(tags = "Produto")
 @RestController
-@RequestMapping("/produto")
+@RequestMapping("/categoria{codigoCategoria}/produto")
 public class ProdutoController {
 
 	@Autowired
 	private ProdutoService produtoService;
 	
+//	@ApiOperation(value = "Listar todos os produtos")
+//	@GetMapping
+//	public List<ProdutoEntity> listAll(){
+//		return produtoService.listAll();
+//	}
+	
 	@ApiOperation(value = "Listar todos os produtos")
 	@GetMapping
-	public List<ProdutoEntity> listAll(){
-		return produtoService.listAll();
+	public List<ProdutoEntity> listAll(@PathVariable Long codigoCategoria){
+		return produtoService.listAll(codigoCategoria);
 	}
 	
 	@ApiOperation(value = "Listar produto por codigo")
