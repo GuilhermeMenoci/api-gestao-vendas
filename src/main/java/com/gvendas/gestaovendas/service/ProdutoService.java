@@ -1,6 +1,7 @@
 package com.gvendas.gestaovendas.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,10 @@ public class ProdutoService {
 	
 	public List<ProdutoEntity> listAll(){
 		return produtoRepository.findAll();
+	}
+	
+	public Optional<ProdutoEntity> listByCodigo(Long codigo){
+		return produtoRepository.findById(codigo);
 	}
 	
 }
