@@ -5,7 +5,7 @@ import com.gvendas.gestaovendas.entity.CategoriaEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel("Categoria DTO")
+@ApiModel("Categoria response DTO")
 public class CategoriaResponseDTO {
 
 	@ApiModelProperty(value = "Código")
