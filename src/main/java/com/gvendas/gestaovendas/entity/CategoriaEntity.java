@@ -27,6 +27,10 @@ public class CategoriaEntity implements Serializable{
 	public CategoriaEntity() {
 	}
 	
+	public CategoriaEntity(Long codigo) {
+		this.codigo = codigo;
+	}
+	
 	public CategoriaEntity(String nome) {
 		this.nome = nome;
 	}
