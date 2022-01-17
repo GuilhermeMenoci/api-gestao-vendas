@@ -43,33 +43,33 @@ public class ProdutoController {
 
 	@ApiOperation(value = "Listar todos os produtos", nickname = "listAllProduct")
 	@GetMapping
-	public List<ProdutoResponseDTO> listAll(@PathVariable Long codigoCategoria) {
-		return produtoService.listAll(codigoCategoria).stream()
+	public List<ProdutoResponseDTO> listarTodosProdutos(@PathVariable Long codigoCategoria) {
+		return produtoService.listarTodosProdutos(codigoCategoria).stream()
 				.map(produto -> ProdutoResponseDTO.converterParaProdutoDTO(produto)).collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Listar produto por codigo", nickname = "listByCodigoProduct")
 	@GetMapping("/{codigo}")
-	public ResponseEntity<ProdutoResponseDTO> listByCodigo(@PathVariable Long codigo) {
-		Optional<ProdutoEntity> produto = produtoService.listByCodigo(codigo);
+	public ResponseEntity<ProdutoResponseDTO> listarPorCodigo(@PathVariable Long codigo) {
+		Optional<ProdutoEntity> produto = produtoService.listarPorCodigo(codigo);
 		return produto.isPresent() ? ResponseEntity.ok(ProdutoResponseDTO.converterParaProdutoDTO(produto.get()))
 				: ResponseEntity.notFound().build();
 	}
 
 	@ApiOperation(value = "Cadastrar um produto", nickname = "saveProduct")
 	@PostMapping
-	public ResponseEntity<ProdutoResponseDTO> save(@PathVariable Long codigoCategoria,
+	public ResponseEntity<ProdutoResponseDTO> salvarProduto(@PathVariable Long codigoCategoria,
 			@Valid @RequestBody ProdutoRequestDTO produto) {
-		ProdutoEntity produtoSalvo = produtoService.save(codigoCategoria,
+		ProdutoEntity produtoSalvo = produtoService.salvarProduto(codigoCategoria,
 				produto.converterParaEntidade(codigoCategoria));
 		return ResponseEntity.status(HttpStatus.CREATED).body(ProdutoResponseDTO.converterParaProdutoDTO(produtoSalvo));
 	}
 
 	@ApiOperation(value = "Atualizar um produto", nickname = "updateProduct")
 	@PutMapping("/{codigoProduto}")
-	public ResponseEntity<ProdutoResponseDTO> update(@PathVariable Long codigoCategoria, @PathVariable Long codigoProduto,
+	public ResponseEntity<ProdutoResponseDTO> atualizarProduto(@PathVariable Long codigoCategoria, @PathVariable Long codigoProduto,
 			@Valid @RequestBody ProdutoRequestDTO produto) {
-		ProdutoEntity produtoAtualizado = produtoService.update(codigoCategoria, codigoProduto, 
+		ProdutoEntity produtoAtualizado = produtoService.atualizarProduto(codigoCategoria, codigoProduto, 
 				produto.converterParaEntidade(codigoCategoria, codigoProduto));
 		return ResponseEntity.ok(ProdutoResponseDTO.converterParaProdutoDTO(produtoAtualizado));
 	}
@@ -77,8 +77,8 @@ public class ProdutoController {
 	@ApiOperation(value = "Deletar um produto", nickname = "deleteProduct")
 	@DeleteMapping("/{codigoProduto}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long codigoCategoria, @PathVariable Long codigoProduto) {
-		produtoService.delete(codigoCategoria, codigoProduto);
+	public void deletarProduto(@PathVariable Long codigoCategoria, @PathVariable Long codigoProduto) {
+		produtoService.deletarProduto(codigoCategoria, codigoProduto);
 	}
 
 }

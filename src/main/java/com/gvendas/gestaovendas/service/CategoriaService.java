@@ -18,32 +18,32 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 	
-	public List<CategoriaEntity> listAll(){
+	public List<CategoriaEntity> listarTodasCategoria(){
 		return categoriaRepository.findAll();
 	}
 	
-	public Optional<CategoriaEntity> listByCodigo(Long codigo){
+	public Optional<CategoriaEntity> listarPorCodigo(Long codigo){
 		return categoriaRepository.findById(codigo);
 	}
 	
-	public CategoriaEntity save(CategoriaEntity categoria) {
+	public CategoriaEntity salvarCategoria(CategoriaEntity categoria) {
 		validarCategoriaDuplicada(categoria);
 		return categoriaRepository.save(categoria);
 	}
 	
-	public CategoriaEntity update(Long codigo, CategoriaEntity categoria) {
-		CategoriaEntity categoriaSave = validCategoriaExist(codigo);
+	public CategoriaEntity atualizarCategoria(Long codigo, CategoriaEntity categoria) {
+		CategoriaEntity categoriaSave = validarSeCategoriaExiste(codigo);
 		validarCategoriaDuplicada(categoria);
 		BeanUtils.copyProperties(categoria, categoriaSave, "codigo");
 		return categoriaRepository.save(categoriaSave);
 	}
 	
-	public void delete(Long codigo) {
+	public void deletarCategoria(Long codigo) {
 		categoriaRepository.deleteById(codigo);
 	}
 
-	private CategoriaEntity validCategoriaExist(Long codigo) {
-		Optional<CategoriaEntity> categoria = listByCodigo(codigo);
+	private CategoriaEntity validarSeCategoriaExiste(Long codigo) {
+		Optional<CategoriaEntity> categoria = listarPorCodigo(codigo);
 		if(categoria.isEmpty())
 			throw new EmptyResultDataAccessException(1);
 		return categoria.get();

@@ -37,16 +37,16 @@ public class CategoriaController {
 
 	@ApiOperation(value = "Listar todas as categorias", nickname = "listAllCategory")
 	@GetMapping
-	public List<CategoriaResponseDTO> listAll() {
-		return categoriaService.listAll().stream()
+	public List<CategoriaResponseDTO> listarTodasCategoria() {
+		return categoriaService.listarTodasCategoria().stream()
 				.map(categoria -> CategoriaResponseDTO.converterParaCategoriaDTO(categoria))
 				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Listar por código", nickname = "listByCodigoCategory")
 	@GetMapping("/{codigo}")
-	public ResponseEntity<CategoriaResponseDTO> listByCodigo(@PathVariable Long codigo) {
-		Optional<CategoriaEntity> categoria = categoriaService.listByCodigo(codigo);
+	public ResponseEntity<CategoriaResponseDTO> listarPorCodigo(@PathVariable Long codigo) {
+		Optional<CategoriaEntity> categoria = categoriaService.listarPorCodigo(codigo);
 		return categoria.isPresent()
 				? ResponseEntity.ok(CategoriaResponseDTO.converterParaCategoriaDTO(categoria.get()))
 				: ResponseEntity.notFound().build();
@@ -54,23 +54,24 @@ public class CategoriaController {
 
 	@ApiOperation(value = "Cadastrar uma categoria", nickname = "saveCategory")
 	@PostMapping
-	public ResponseEntity<CategoriaResponseDTO> save(@Valid @RequestBody CategoriaRequestDTO categoriaDTO) {
-		CategoriaEntity categoriaSave = categoriaService.save(categoriaDTO.converterParaEntidade());
+	public ResponseEntity<CategoriaResponseDTO> salvarCategoria(@Valid @RequestBody CategoriaRequestDTO categoriaDTO) {
+		CategoriaEntity categoriaSave = categoriaService.salvarCategoria(categoriaDTO.converterParaEntidade());
 		return ResponseEntity.status(HttpStatus.CREATED).body(CategoriaResponseDTO.converterParaCategoriaDTO(categoriaSave));
 	}
 
 	@ApiOperation(value = "Atualizar uma categoria", nickname = "updateCategory")
 	@PutMapping("/{codigo}")
-	public ResponseEntity<CategoriaEntity> update(@PathVariable Long codigo,
+	public ResponseEntity<CategoriaResponseDTO> atualizarCategoria(@PathVariable Long codigo,
 			@Valid @RequestBody CategoriaRequestDTO categoriaDTO) {
-		return ResponseEntity.ok(categoriaService.update(codigo, categoriaDTO.converterParaEntidade(codigo)));
+		CategoriaEntity categoriaAtualizada = categoriaService.atualizarCategoria(codigo, categoriaDTO.converterParaEntidade(codigo));
+		return ResponseEntity.ok(CategoriaResponseDTO.converterParaCategoriaDTO(categoriaAtualizada));
 	}
 
 	@ApiOperation(value = "Deletar uma categoria", nickname = "deleteCategory")
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long codigo) {
-		categoriaService.delete(codigo);
+	public void deletarCategoria(@PathVariable Long codigo) {
+		categoriaService.deletarCategoria(codigo);
 	}
 
 }
