@@ -3,7 +3,9 @@ package com.gvendas.gestaovendas.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.gvendas.gestaovendas.entity.ClienteEntity;
@@ -27,6 +29,25 @@ public class ClienteService {
 	public ClienteEntity salvarCliente(ClienteEntity cliente) {
 		validarClienteDuplicado(cliente);
 		return clienteRepository.save(cliente);
+	}
+	
+	public ClienteEntity atualizarCliente(Long codigo, ClienteEntity cliente) {
+		ClienteEntity clienteAtualizar = validarClienteExiste(codigo);
+		validarClienteDuplicado(cliente);
+		BeanUtils.copyProperties(cliente, clienteAtualizar, "codigo");
+		return clienteRepository.save(clienteAtualizar);
+	}
+	
+	public void deletarCliente(Long codigo) {
+		clienteRepository.deleteById(codigo);
+	}
+	
+	private ClienteEntity validarClienteExiste(Long codigo) {
+		Optional<ClienteEntity> cliente = listarPorCodigo(codigo);
+		if(cliente.isEmpty()) {
+			throw new EmptyResultDataAccessException(1);
+		}
+		return cliente.get();
 	}
 	
 	private void validarClienteDuplicado(ClienteEntity cliente) {
