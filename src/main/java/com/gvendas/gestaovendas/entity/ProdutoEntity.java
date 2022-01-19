@@ -66,6 +66,10 @@ public class ProdutoEntity implements Serializable{
 		this.observacao = observacao;
 		this.categoria = categoria;
 	}
+	
+	public ProdutoEntity(Long codigo) {
+		this.codigo = codigo;
+	}
 
 	public Long getCodigo() {
 		return codigo;

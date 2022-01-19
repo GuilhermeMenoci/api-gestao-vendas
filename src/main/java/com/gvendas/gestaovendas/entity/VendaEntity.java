@@ -20,13 +20,20 @@ public class VendaEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigo")
 	private Long codigo;
-	
+
 	@Column(name = "data")
 	private LocalDate data;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "codigo_cliente", referencedColumnName = "codigo")
 	private ClienteEntity cliente;
+
+	public VendaEntity(LocalDate data, ClienteEntity cliente) {
+		this.data = data;
+		this.cliente = cliente;
+	}
+	public VendaEntity() {
+	}
 
 	public Long getCodigo() {
 		return codigo;
@@ -69,7 +76,5 @@ public class VendaEntity {
 		return Objects.equals(cliente, other.cliente) && Objects.equals(codigo, other.codigo)
 				&& Objects.equals(data, other.data);
 	}
-	
-	
-	
+
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.gvendas.gestaovendas.entity.ProdutoEntity;
@@ -53,10 +52,11 @@ public class ProdutoService {
 		produtoRepository.delete(produto);
 	}
 	
-	private ProdutoEntity validarSeProdutoExiste(Long codigoProduto) {
-		Optional<ProdutoEntity> produto = listarPorCodigo(codigoProduto);
+	protected ProdutoEntity validarSeProdutoExiste(Long codigoProduto) {
+//		Optional<ProdutoEntity> produto = listarPorCodigo(codigoProduto);
+		Optional<ProdutoEntity> produto = produtoRepository.findById(codigoProduto);
 		if(produto.isEmpty()) {
-			throw new EmptyResultDataAccessException(1);
+			throw new RegraNegocioException(String.format("Produto de código %s não encontrado!", codigoProduto));
 		}
 		return produto.get();
 	}
