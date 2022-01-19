@@ -1,6 +1,5 @@
 package com.gvendas.gestaovendas.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,8 +12,6 @@ import com.gvendas.gestaovendas.dto.venda.ItemVendaRequestDTO;
 import com.gvendas.gestaovendas.dto.venda.VendaRequestDTO;
 import com.gvendas.gestaovendas.dto.venda.VendaResponseDTO;
 import com.gvendas.gestaovendas.entity.ClienteEntity;
-import com.gvendas.gestaovendas.entity.ItemVenda;
-import com.gvendas.gestaovendas.entity.ProdutoEntity;
 import com.gvendas.gestaovendas.entity.VendaEntity;
 import com.gvendas.gestaovendas.exception.RegraNegocioException;
 import com.gvendas.gestaovendas.repository.ItemVendaRepository;
@@ -45,18 +42,16 @@ public class VendaService extends AbstractVendaService {
 
 	public ClienteVendaResponseDTO listarVendaPorCodigo(Long codigoVenda) {
 		VendaEntity venda = validarVendaExiste(codigoVenda);
-		return new ClienteVendaResponseDTO(venda.getCliente().getNome(), Arrays
-				.asList(criandoVendaResponseDTO(venda, itemVendaRepository.findByVendaPorCodigo(venda.getCodigo()))));
+		return retornandoClienteVendaResponseDto(venda, itemVendaRepository.findByVendaPorCodigo(venda.getCodigo()));
 	}
 
 	public ClienteVendaResponseDTO salvar(Long codigoCliente, VendaRequestDTO vendaDto) {
 		ClienteEntity cliente = validarClienteVendaExiste(codigoCliente);
 		validarProdutoExiste(vendaDto.getItensVendaDto());
 		VendaEntity vendaSalva = salvarVenda(cliente, vendaDto);
-		return new ClienteVendaResponseDTO(vendaSalva.getCliente().getNome(), Arrays
-				.asList(criandoVendaResponseDTO(vendaSalva, itemVendaRepository.findByVendaPorCodigo(vendaSalva.getCodigo()))));
+		return retornandoClienteVendaResponseDto(vendaSalva, itemVendaRepository.findByVendaPorCodigo(vendaSalva.getCodigo()));
 	}
-
+	
 	private VendaEntity salvarVenda(ClienteEntity cliente, VendaRequestDTO vendaDto) {
 		VendaEntity vendaSalva = vendaRepository.save(new VendaEntity(vendaDto.getData(), cliente));
 		vendaDto.getItensVendaDto().stream().map(itemVendaDto -> criandoItemVenda(itemVendaDto, vendaSalva))
@@ -85,9 +80,6 @@ public class VendaService extends AbstractVendaService {
 		return cliente.get();
 	}
 
-	private ItemVenda criandoItemVenda(ItemVendaRequestDTO itemVendaDto, VendaEntity venda) {
-		return new ItemVenda(itemVendaDto.getQuantidade(), itemVendaDto.getPrecoVendido(),
-				new ProdutoEntity(itemVendaDto.getCodigoProduto()), venda);
-	}
+	
 
 }
