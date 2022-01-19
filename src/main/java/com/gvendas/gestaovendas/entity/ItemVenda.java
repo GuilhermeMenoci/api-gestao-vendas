@@ -20,13 +20,13 @@ public class ItemVenda {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigo")
 	private Long codigo;
-	
+
 	@Column(name = "quantidade")
 	private Integer quantidade;
-	
+
 	@Column(name = "preco_vendido")
 	private BigDecimal precoVendido;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "codigo_produto", referencedColumnName = "codigo")
 	private ProdutoEntity produto;
@@ -34,16 +34,26 @@ public class ItemVenda {
 	@ManyToOne
 	@JoinColumn(name = "codigo_venda", referencedColumnName = "codigo")
 	private VendaEntity venda;
-	
+
 	public ItemVenda(Integer quantidade, BigDecimal precoVendido, ProdutoEntity produto, VendaEntity venda) {
 		this.quantidade = quantidade;
 		this.precoVendido = precoVendido;
 		this.produto = produto;
 		this.venda = venda;
 	}
+
+	public ItemVenda(Long codigo, Integer quantidade, BigDecimal precoVendido, ProdutoEntity produto,
+			VendaEntity venda) {
+		this.codigo = codigo;
+		this.quantidade = quantidade;
+		this.precoVendido = precoVendido;
+		this.produto = produto;
+		this.venda = venda;
+	}
+
 	public ItemVenda() {
 	}
-	
+
 	public Long getCodigo() {
 		return codigo;
 	}
@@ -102,7 +112,5 @@ public class ItemVenda {
 				&& Objects.equals(produto, other.produto) && Objects.equals(quantidade, other.quantidade)
 				&& Objects.equals(venda, other.venda);
 	}
-	
-	
-	
+
 }
