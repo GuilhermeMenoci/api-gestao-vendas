@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel("Cliente da venda response DTO")
-public class ClienteVendaRespondeDTO {
+public class ClienteVendaResponseDTO {
 	
 	@ApiModelProperty(value = "Nome cliente")
 	private String nome;
@@ -14,7 +14,7 @@ public class ClienteVendaRespondeDTO {
 	@ApiModelProperty(value = "Venda")
 	private List<VendaResponseDTO> vendaResponseDTO;
 	
-	public ClienteVendaRespondeDTO(String nome, List<VendaResponseDTO> vendaResponseDTO) {
+	public ClienteVendaResponseDTO(String nome, List<VendaResponseDTO> vendaResponseDTO) {
 		this.nome = nome;
 		this.vendaResponseDTO = vendaResponseDTO;
 	}
