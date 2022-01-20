@@ -52,6 +52,10 @@ public class ProdutoService {
 		produtoRepository.delete(produto);
 	}
 	
+	protected void atualizarQuantidadeAposVenda(ProdutoEntity produto) {
+		produtoRepository.save(produto);
+	}
+	
 	protected ProdutoEntity validarSeProdutoExiste(Long codigoProduto) {
 //		Optional<ProdutoEntity> produto = listarPorCodigo(codigoProduto);
 		Optional<ProdutoEntity> produto = produtoRepository.findById(codigoProduto);

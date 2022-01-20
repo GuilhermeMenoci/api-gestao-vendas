@@ -12,6 +12,7 @@ import com.gvendas.gestaovendas.dto.venda.ItemVendaRequestDTO;
 import com.gvendas.gestaovendas.dto.venda.VendaRequestDTO;
 import com.gvendas.gestaovendas.dto.venda.VendaResponseDTO;
 import com.gvendas.gestaovendas.entity.ClienteEntity;
+import com.gvendas.gestaovendas.entity.ProdutoEntity;
 import com.gvendas.gestaovendas.entity.VendaEntity;
 import com.gvendas.gestaovendas.exception.RegraNegocioException;
 import com.gvendas.gestaovendas.repository.ItemVendaRepository;
@@ -47,7 +48,7 @@ public class VendaService extends AbstractVendaService {
 
 	public ClienteVendaResponseDTO salvar(Long codigoCliente, VendaRequestDTO vendaDto) {
 		ClienteEntity cliente = validarClienteVendaExiste(codigoCliente);
-		validarProdutoExiste(vendaDto.getItensVendaDto());
+		validarProdutoExisteEAtualizar(vendaDto.getItensVendaDto());
 		VendaEntity vendaSalva = salvarVenda(cliente, vendaDto);
 		return retornandoClienteVendaResponseDto(vendaSalva, itemVendaRepository.findByVendaPorCodigo(vendaSalva.getCodigo()));
 	}
@@ -59,8 +60,20 @@ public class VendaService extends AbstractVendaService {
 		return vendaSalva;
 	}
 
-	private void validarProdutoExiste(List<ItemVendaRequestDTO> itensVendaDto) {
-		itensVendaDto.forEach(item -> produtoService.listarPorCodigo(item.getCodigoProduto()));
+	private void validarProdutoExisteEAtualizar(List<ItemVendaRequestDTO> itensVendaDto) {
+		itensVendaDto.forEach(item -> { 
+		ProdutoEntity produto = produtoService.validarSeProdutoExiste(item.getCodigoProduto());
+		validarQuantidadeProdutoExiste(produto, item.getQuantidade());
+		produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
+		produtoService.atualizarQuantidadeAposVenda(produto);
+		});
+	}
+	
+	private void validarQuantidadeProdutoExiste(ProdutoEntity produto, Integer quantidade) {
+		if(!(produto.getQuantidade() >= quantidade)) {
+			throw new RegraNegocioException(String.format("A quantidade %s informada para o produto %s não está disponivel em estoque", 
+					quantidade, produto.getDescricao()));
+		}
 	}
 
 	private VendaEntity validarVendaExiste(Long codigoVenda) {
