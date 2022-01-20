@@ -34,6 +34,11 @@ public class VendaEntity {
 	}
 	public VendaEntity() {
 	}
+	public VendaEntity(Long codigo, LocalDate data, ClienteEntity cliente) {
+		this.codigo = codigo;
+		this.data = data;
+		this.cliente = cliente;
+	}
 
 	public Long getCodigo() {
 		return codigo;
