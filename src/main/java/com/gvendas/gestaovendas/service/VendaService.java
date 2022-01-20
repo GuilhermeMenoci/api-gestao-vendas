@@ -6,12 +6,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gvendas.gestaovendas.dto.venda.ClienteVendaResponseDTO;
 import com.gvendas.gestaovendas.dto.venda.ItemVendaRequestDTO;
 import com.gvendas.gestaovendas.dto.venda.VendaRequestDTO;
 import com.gvendas.gestaovendas.dto.venda.VendaResponseDTO;
 import com.gvendas.gestaovendas.entity.ClienteEntity;
+import com.gvendas.gestaovendas.entity.ItemVenda;
 import com.gvendas.gestaovendas.entity.ProdutoEntity;
 import com.gvendas.gestaovendas.entity.VendaEntity;
 import com.gvendas.gestaovendas.exception.RegraNegocioException;
@@ -46,11 +49,29 @@ public class VendaService extends AbstractVendaService {
 		return retornandoClienteVendaResponseDto(venda, itemVendaRepository.findByVendaPorCodigo(venda.getCodigo()));
 	}
 
+	@org.springframework.transaction.annotation.Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
 	public ClienteVendaResponseDTO salvar(Long codigoCliente, VendaRequestDTO vendaDto) {
 		ClienteEntity cliente = validarClienteVendaExiste(codigoCliente);
 		validarProdutoExisteEAtualizar(vendaDto.getItensVendaDto());
 		VendaEntity vendaSalva = salvarVenda(cliente, vendaDto);
 		return retornandoClienteVendaResponseDto(vendaSalva, itemVendaRepository.findByVendaPorCodigo(vendaSalva.getCodigo()));
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+	public void deletarVenda(Long codigoVenda) {
+		validarVendaExiste(codigoVenda);
+		List<ItemVenda> itensVenda = itemVendaRepository.findByVendaPorCodigo(codigoVenda);
+		validarProdutoExisteEValidarEstoque(itensVenda);
+		itemVendaRepository.deleteAll(itensVenda);
+		vendaRepository.deleteById(codigoVenda);;
+	}
+	
+	private void validarProdutoExisteEValidarEstoque(List<ItemVenda> itensVenda) {
+		itensVenda.forEach(item -> {
+			ProdutoEntity produto = produtoService.validarSeProdutoExiste(item.getProduto().getCodigo());
+			produto.setQuantidade(produto.getQuantidade() + item.getQuantidade());
+			produtoService.atualizarQuantidadeEmEstoque(produto);
+		});
 	}
 	
 	private VendaEntity salvarVenda(ClienteEntity cliente, VendaRequestDTO vendaDto) {
@@ -65,7 +86,7 @@ public class VendaService extends AbstractVendaService {
 		ProdutoEntity produto = produtoService.validarSeProdutoExiste(item.getCodigoProduto());
 		validarQuantidadeProdutoExiste(produto, item.getQuantidade());
 		produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
-		produtoService.atualizarQuantidadeAposVenda(produto);
+		produtoService.atualizarQuantidadeEmEstoque(produto);
 		});
 	}
 	
